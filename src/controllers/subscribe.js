@@ -1,5 +1,7 @@
+require("dotenv").config();
+
 const TelegramBot = require("node-telegram-bot-api");
-const token = "YOUR_TELEGRAM_BOT_TOKEN";
+const token = process.env.YOUR_TELEGRAM_BOT_TOKEN;
 const channels = ["channel1", "channel2", "channel3"];
 
 const bot = new TelegramBot(token, { polling: true });
@@ -36,7 +38,7 @@ function startCommenting() {
   });
 }
 
-// /////////////////
+/*
 
 function subscribeToChannel(channel) {
   bot
@@ -69,3 +71,5 @@ setInterval(replaceAccounts, 24 * 60 * 60 * 1000);
 autoSubscribe();
 
 module.exports = { autoSubscribe, startCommenting };
+
+*/

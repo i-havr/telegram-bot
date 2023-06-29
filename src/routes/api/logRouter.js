@@ -1,9 +1,9 @@
 const express = require("express");
 const { logController } = require("../../controllers");
-const { cntrlWrap } = require("../../helpers");
+const { catchAsync } = require("../../helpers");
 
 const logRouter = express.Router();
 
-logRouter.post("/log", cntrlWrap(logController));
+logRouter.post("/log", catchAsync(logController));
 
 module.exports = logRouter;
