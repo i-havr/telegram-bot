@@ -1,3 +1,20 @@
-const { autoSubscribe, startCommenting } = require("./subscribe");
+const {
+  testController,
+  autoSubscribe,
+  startCommenting,
+} = require("./subscribe");
 
-module.exports = { autoSubscribe, startCommenting };
+const {
+  loginUserController,
+  logoutUserController,
+  currentUserController,
+} = require("./usersController");
+
+module.exports = {
+  testController,
+  autoSubscribe,
+  startCommenting,
+  loginUserController,
+  logoutUserController,
+  currentUserController,
+};

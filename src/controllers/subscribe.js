@@ -1,12 +1,25 @@
-require("dotenv").config();
+const { User } = require("../models/userModel");
 
 const TelegramBot = require("node-telegram-bot-api");
-const token = process.env.YOUR_TELEGRAM_BOT_TOKEN;
 const channels = ["channel1", "channel2", "channel3"];
 
-const bot = new TelegramBot(token, { polling: true });
+// const bot = new TelegramBot(token, { polling: true });
 
-function subscribeToChannel(channel) {
+const testController = async (req, res, next) => {
+  const { email, telegramToken, message, newMessage, channelsList } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user) {
+    user.telegramToken = telegramToken;
+    await user.save();
+  }
+
+  const bot = new TelegramBot(telegramToken, { polling: true });
+  subscribeToChannel(bot, channelsList);
+};
+
+function subscribeToChannel(bot, channel) {
   bot
     .getChat(channel)
     .then((chat) => {
@@ -26,7 +39,7 @@ function autoSubscribe(channels) {
   });
 }
 
-function startCommenting() {
+function startCommenting(bot) {
   bot.onText(/\/post (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
     const postId = msg.message_id;
@@ -70,6 +83,5 @@ function replaceAccounts() {
 setInterval(replaceAccounts, 24 * 60 * 60 * 1000);
 autoSubscribe();
 
-module.exports = { autoSubscribe, startCommenting };
-
 */
+module.exports = { testController, autoSubscribe, startCommenting };

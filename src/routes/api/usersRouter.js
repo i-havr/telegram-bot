@@ -7,7 +7,7 @@ const {
   loginUserController,
   logoutUserController,
   currentUserController,
-} = require("../../controllers/usersController");
+} = require("../../controllers");
 
 const {
   checkLoginData,

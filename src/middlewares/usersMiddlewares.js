@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const { User } = require("../models/userModel");
 
-const { AppError, UnauthorizedError, validateUserData } = require("../helpers");
+const { AppError, UnauthorizedError } = require("../helpers");
 
 const checkLoginData = async (req, _, next) => {
   const { email, password } = req.body;
