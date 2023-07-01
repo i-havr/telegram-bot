@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 const { User } = require("../models/userModel");
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -7,23 +9,56 @@ const channels = ["channel1", "channel2", "channel3"];
 
 const testController = async (req, res, next) => {
   const { email, telegramToken, message, newMessage, channelsList } = req.body;
+  // const user = await User.findOne({ email });
+  // if (user) {
+  //   user.telegramToken = telegramToken;
+  //   await user.save();
+  // }
+  // const bot = new TelegramBot(telegramToken, { polling: true });
+  // subscribeToChannel(bot, channelsList);
+  try {
+    const params = new URLSearchParams({
+      chat_id: channelsList,
+    });
+    const url = `https://api.telegram.org/bot${telegramToken}/getChat?${params}`;
 
-  const user = await User.findOne({ email });
+    const { data } = await axios.get(url);
+    console.log("=========>>>>>>>", data.result.id);
 
-  if (user) {
-    user.telegramToken = telegramToken;
-    await user.save();
+    if (data.ok) {
+      const chatId = data.result.id;
+      // Подписываемся на канал
+      const joinParams = new URLSearchParams({
+        chat_id: chatId,
+        // chat_id: chatId.toString().slice(1),
+      });
+      const joinUrl = `https://api.telegram.org/bot${telegramToken}/joinChat`;
+      console.log("testController -> joinUrl ===>>>> ", joinUrl);
+
+      const { data: joinResponse } = await axios.post(joinUrl, joinParams);
+
+      if (joinResponse.ok) {
+        console.log(`Подписан на канал ${channelsList}`);
+      } else {
+        console.log(`Ошибка при подписке на канал`);
+      }
+    } else {
+      console.log(
+        `Ошибка при получении информации о канале: ${data.description}`
+      );
+    }
+  } catch (error) {
+    console.log("Произошла ошибка:", error);
   }
-
-  const bot = new TelegramBot(telegramToken, { polling: true });
-  subscribeToChannel(bot, channelsList);
 };
 
 function subscribeToChannel(bot, channel) {
   bot
     .getChat(channel)
     .then((chat) => {
-      bot.sendMessage(chat.id, "/start");
+      console.dir(bot);
+      bot.joinChat(chat.id);
+      // bot.sendMessage(chat.id, "/start");
       console.log(`Подписан на канал ${chat.title}`);
     })
     .catch((error) => {
